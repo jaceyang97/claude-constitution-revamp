@@ -11,6 +11,9 @@ dist/
 .env
 .env.*
 
+# raw source illustrations (renamed copies go to public/illustrations/)
+src/assets/illustrations/
+
 # OS
 .DS_Store
 Thumbs.db
