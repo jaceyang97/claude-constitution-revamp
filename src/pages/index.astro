@@ -3,24 +3,10 @@
 import { getCollection } from 'astro:content';
 import ReadingLayout from '../layouts/ReadingLayout.astro';
 import PageTurn from '../components/PageTurn.astro';
+import { toRoman } from '../utils/roman';
 
 const allSections = await getCollection('sections');
 const sorted = allSections.sort((a, b) => a.data.order - b.data.order);
-
-function toRoman(num: number): string {
-  const lookup: [number, string][] = [
-    [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I'],
-  ];
-  let result = '';
-  let remaining = num;
-  for (const [value, numeral] of lookup) {
-    while (remaining >= value) {
-      result += numeral;
-      remaining -= value;
-    }
-  }
-  return result;
-}
 ---
 
 <ReadingLayout

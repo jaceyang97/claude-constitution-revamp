@@ -28,7 +28,7 @@ export async function getStaticPaths() {
 const { section, prev, next, allSorted } = Astro.props;
 
 const totalChapters = allSorted.length;
-const chapters = allSorted.map((s: any) => ({
+const chapters = allSorted.map((s) => ({
   slug: s.id,
   title: s.data.title,
 }));
@@ -61,10 +61,10 @@ const bodyHtml = marked.parse(section.body || '') as string;
   </div>
 
   <PageTurn
-    prevHref={prev ? `/${prev.id}` : '/'}
+    prevHref={prevUrl}
     prevLabel={prev ? 'Previous' : 'Contents'}
     prevTitle={prev ? prev.data.title : 'Table of Contents'}
-    nextHref={next ? `/${next.id}` : '/'}
+    nextHref={nextUrl}
     nextLabel={next ? 'Next' : 'Fin'}
     nextTitle={next ? next.data.title : 'Return to Contents'}
   />
