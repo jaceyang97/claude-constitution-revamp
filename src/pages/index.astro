@@ -1,0 +1,88 @@
+---
+// index.astro — book cover page with table of contents
+import { getCollection } from 'astro:content';
+import ReadingLayout from '../layouts/ReadingLayout.astro';
+import PageTurn from '../components/PageTurn.astro';
+
+const allSections = await getCollection('sections');
+const sorted = allSections.sort((a, b) => a.data.order - b.data.order);
+
+function toRoman(num: number): string {
+  const lookup: [number, string][] = [
+    [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I'],
+  ];
+  let result = '';
+  let remaining = num;
+  for (const [value, numeral] of lookup) {
+    while (remaining >= value) {
+      result += numeral;
+      remaining -= value;
+    }
+  }
+  return result;
+}
+---
+
+<ReadingLayout
+  title="Claude's Constitution: Illustrated"
+  prevUrl={`/${sorted[sorted.length - 1].id}`}
+  nextUrl={`/${sorted[0].id}`}
+>
+  <!-- Title / Cover -->
+  <header class="text-center mb-16 md:mb-24 px-6 pt-12 md:pt-20">
+    <div class="flex items-center justify-center gap-3 mb-8">
+      <span class="block w-16 h-px bg-gold-dim/40"></span>
+      <span class="text-gold-dim text-xs">&#10022;</span>
+      <span class="block w-16 h-px bg-gold-dim/40"></span>
+    </div>
+    <p class="font-sans text-[10px] uppercase tracking-[0.3em] text-gold-dim mb-6">
+      Anthropic
+    </p>
+    <h1 class="font-serif text-5xl md:text-7xl font-semibold text-parchment leading-tight mb-4">
+      Claude&rsquo;s Constitution
+    </h1>
+    <p class="font-serif text-lg md:text-xl text-parchment/60 italic">
+      Illustrated
+    </p>
+    <div class="flex items-center justify-center gap-3 mt-8">
+      <span class="block w-16 h-px bg-gold-dim/40"></span>
+      <span class="text-gold-dim text-xs">&#10022;</span>
+      <span class="block w-16 h-px bg-gold-dim/40"></span>
+    </div>
+  </header>
+
+  <!-- Table of Contents -->
+  <section class="max-w-lg mx-auto px-6 mb-16 md:mb-24">
+    <h2 class="font-sans text-[10px] uppercase tracking-[0.25em] text-gold-dim text-center mb-10">
+      Contents
+    </h2>
+
+    <ol class="space-y-0">
+      {sorted.map((section) => (
+        <li>
+          <a
+            href={`/${section.id}`}
+            class="group flex items-baseline gap-4 py-3 border-b border-parchment/6 hover:border-gold-dim/20 transition-colors"
+          >
+            <span class="font-sans text-xs text-gold-dim/60 w-8 shrink-0 text-right">
+              {toRoman(section.data.order)}
+            </span>
+            <span class="font-serif text-base md:text-lg text-parchment/80 group-hover:text-parchment transition-colors">
+              {section.data.title}
+            </span>
+            <span class="flex-1 border-b border-dotted border-parchment/10 mb-1 min-w-4"></span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <PageTurn
+    prevHref={`/${sorted[sorted.length - 1].id}`}
+    prevLabel="Last Chapter"
+    prevTitle={sorted[sorted.length - 1].data.title}
+    nextHref={`/${sorted[0].id}`}
+    nextLabel="Begin"
+    nextTitle={sorted[0].data.title}
+  />
+</ReadingLayout>

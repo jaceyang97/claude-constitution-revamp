@@ -1,0 +1,95 @@
+---
+// ReadingLayout.astro — wraps the reading experience; used by cover and chapter pages
+import { ViewTransitions } from 'astro:transitions';
+import ChapterNav from '../components/ChapterNav.astro';
+import ProgressBar from '../components/ProgressBar.astro';
+import '../styles/global.css';
+
+interface ChapterInfo {
+  slug: string;
+  title: string;
+}
+
+interface Props {
+  title: string;
+  /** If provided, shows chapter nav + progress bar */
+  currentOrder?: number;
+  totalChapters?: number;
+  chapterTitle?: string;
+  chapters?: ChapterInfo[];
+  /** URLs for keyboard arrow-key navigation */
+  prevUrl?: string;
+  nextUrl?: string;
+}
+
+const {
+  title,
+  currentOrder,
+  totalChapters,
+  chapterTitle,
+  chapters,
+  prevUrl,
+  nextUrl,
+} = Astro.props;
+
+const isChapterPage = currentOrder !== undefined;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Claude's Constitution: Illustrated — Anthropic's AI guidelines presented as an illuminated manuscript." />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <ViewTransitions />
+  </head>
+  <body class="min-h-screen bg-ink antialiased">
+    {isChapterPage && chapters && totalChapters && chapterTitle && (
+      <>
+        <ChapterNav
+          currentOrder={currentOrder}
+          totalChapters={totalChapters}
+          chapterTitle={chapterTitle}
+        />
+        <ProgressBar
+          chapters={chapters}
+          currentOrder={currentOrder}
+        />
+      </>
+    )}
+
+    <!-- Main reading column -->
+    <main class={isChapterPage ? 'pt-20 pb-8' : 'py-12 md:py-20'}>
+      <slot />
+    </main>
+
+    <!-- Colophon -->
+    <footer class="text-center pb-16 px-6">
+      <div class="flex items-center justify-center gap-3 mb-6">
+        <span class="block w-12 h-px bg-gold-dim/40"></span>
+        <span class="text-gold-dim text-xs">&#10022;</span>
+        <span class="block w-12 h-px bg-gold-dim/40"></span>
+      </div>
+      <p class="font-sans text-xs text-parchment/30 tracking-wide">
+        Based on Anthropic&rsquo;s Claude Constitution &middot; Illustrated Edition
+      </p>
+    </footer>
+
+    {/* Keyboard arrow-key navigation — works on cover and chapter pages */}
+    <script is:inline define:vars={{ prevUrl: prevUrl || '', nextUrl: nextUrl || '' }}>
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.key === 'ArrowLeft' && prevUrl) {
+          window.location.href = prevUrl;
+        } else if (e.key === 'ArrowRight' && nextUrl) {
+          window.location.href = nextUrl;
+        }
+        // Hide keyboard hint after first keypress
+        const hint = document.getElementById('keyboard-hint');
+        if (hint) hint.style.opacity = '0';
+      });
+    </script>
+  </body>
+</html>

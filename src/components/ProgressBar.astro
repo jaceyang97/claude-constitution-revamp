@@ -1,0 +1,38 @@
+---
+// ProgressBar.astro — segmented chapter progress indicator
+interface ChapterInfo {
+  slug: string;
+  title: string;
+}
+
+interface Props {
+  chapters: ChapterInfo[];
+  currentOrder: number;
+}
+
+const { chapters, currentOrder } = Astro.props;
+---
+
+<div class="fixed top-12 left-0 right-0 z-30 h-[3px] bg-ink-lighter/50 flex" aria-label="Chapter progress">
+  {chapters.map((chapter, i) => {
+    const order = i + 1;
+    const isComplete = order < currentOrder;
+    const isCurrent = order === currentOrder;
+    return (
+      <a
+        href={`/${chapter.slug}`}
+        class:list={[
+          'flex-1 block h-full transition-colors duration-300',
+          {
+            'bg-gold': isComplete,
+            'bg-gold/60': isCurrent,
+            'bg-transparent hover:bg-parchment/10': !isComplete && !isCurrent,
+          },
+        ]}
+        title={chapter.title}
+        aria-label={`Chapter ${order}: ${chapter.title}`}
+        aria-current={isCurrent ? 'step' : undefined}
+      />
+    );
+  })}
+</div>

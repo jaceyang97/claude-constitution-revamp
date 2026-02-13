@@ -1,0 +1,71 @@
+---
+// [slug].astro — individual chapter page
+import { getCollection } from 'astro:content';
+import { marked } from 'marked';
+import ReadingLayout from '../layouts/ReadingLayout.astro';
+import PageTurn from '../components/PageTurn.astro';
+
+export async function getStaticPaths() {
+  const allSections = await getCollection('sections');
+  const sorted = allSections.sort((a, b) => a.data.order - b.data.order);
+
+  return sorted.map((section, index) => {
+    const prev = sorted[index - 1] || null;
+    const next = sorted[index + 1] || null;
+
+    return {
+      params: { slug: section.id },
+      props: {
+        section,
+        prev,
+        next,
+        allSorted: sorted,
+      },
+    };
+  });
+}
+
+const { section, prev, next, allSorted } = Astro.props;
+
+const totalChapters = allSorted.length;
+const chapters = allSorted.map((s: any) => ({
+  slug: s.id,
+  title: s.data.title,
+}));
+
+const prevUrl = prev ? `/${prev.id}` : '/';
+const nextUrl = next ? `/${next.id}` : '/';
+
+const bodyHtml = marked.parse(section.body || '') as string;
+---
+
+<ReadingLayout
+  title={`${section.data.title} — Claude's Constitution: Illustrated`}
+  currentOrder={section.data.order}
+  totalChapters={totalChapters}
+  chapterTitle={section.data.title}
+  chapters={chapters}
+  prevUrl={prevUrl}
+  nextUrl={nextUrl}
+>
+  {/* Section title */}
+  <div class="max-w-prose mx-auto px-6 md:px-0">
+    <h1 class="font-serif text-3xl md:text-4xl font-semibold text-parchment mb-12 text-center" transition:animate="fade">
+      {section.data.title}
+    </h1>
+  </div>
+
+  {/* Chapter content */}
+  <div class="max-w-prose mx-auto px-6 md:px-0">
+    <div class="prose" set:html={bodyHtml} />
+  </div>
+
+  <PageTurn
+    prevHref={prev ? `/${prev.id}` : '/'}
+    prevLabel={prev ? 'Previous' : 'Contents'}
+    prevTitle={prev ? prev.data.title : 'Table of Contents'}
+    nextHref={next ? `/${next.id}` : '/'}
+    nextLabel={next ? 'Next' : 'Fin'}
+    nextTitle={next ? next.data.title : 'Return to Contents'}
+  />
+</ReadingLayout>

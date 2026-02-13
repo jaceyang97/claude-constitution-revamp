@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: #8a7340 #0a0a0a;
+  }
+
+  body {
+    @apply bg-ink text-parchment font-serif;
+  }
+
+  ::selection {
+    background-color: rgba(196, 163, 90, 0.3);
+    color: #e8e0d4;
+  }
+
+  /* Prose styling for rendered markdown */
+  .prose h1,
+  .prose h2,
+  .prose h3 {
+    @apply font-serif font-semibold text-parchment;
+  }
+
+  .prose h2 {
+    @apply text-2xl mt-10 mb-4;
+  }
+
+  .prose h3 {
+    @apply text-xl mt-8 mb-3;
+  }
+
+  .prose p {
+    @apply text-base leading-reading mb-6 text-parchment/90;
+  }
+
+  .prose ul,
+  .prose ol {
+    @apply mb-6 pl-6 text-parchment/90;
+  }
+
+  .prose li {
+    @apply mb-2 leading-reading;
+  }
+
+  .prose ul li {
+    @apply list-disc;
+  }
+
+  .prose ol li {
+    @apply list-decimal;
+  }
+
+  .prose blockquote {
+    @apply border-l-2 border-gold-dim pl-6 italic my-6 text-parchment/70;
+  }
+
+  .prose strong {
+    @apply font-semibold text-parchment;
+  }
+
+  .prose em {
+    @apply italic;
+  }
+
+  .prose a {
+    @apply text-gold underline underline-offset-2 hover:text-gold-dim transition-colors;
+  }
+
+  .prose img {
+    @apply w-full max-w-2xl mx-auto my-10 border border-parchment/10 rounded;
+  }
+}
+
+/* View transition: gentle fade for page turns */
+::view-transition-old(root) {
+  animation: fade-out 200ms ease-out;
+}
+
+::view-transition-new(root) {
+  animation: fade-in 300ms ease-in;
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

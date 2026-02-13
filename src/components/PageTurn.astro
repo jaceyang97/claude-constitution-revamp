@@ -1,0 +1,71 @@
+---
+// PageTurn.astro — bottom prev/next chapter navigation styled like book page-turn controls
+interface Props {
+  prevHref?: string;
+  prevLabel?: string;
+  prevTitle?: string;
+  nextHref?: string;
+  nextLabel?: string;
+  nextTitle?: string;
+}
+
+const { prevHref, prevLabel = 'Previous', prevTitle, nextHref, nextLabel = 'Next', nextTitle } = Astro.props;
+---
+
+<nav class="max-w-prose mx-auto px-6 md:px-0 mt-20 mb-12">
+  <!-- Decorative rule above -->
+  <div class="flex items-center justify-center gap-3 mb-10">
+    <span class="block w-12 h-px bg-gold-dim/40"></span>
+    <span class="text-gold-dim text-xs">&#10022;</span>
+    <span class="block w-12 h-px bg-gold-dim/40"></span>
+  </div>
+
+  <div class="flex items-stretch gap-4">
+    {/* Previous */}
+    {prevHref ? (
+      <a
+        href={prevHref}
+        class="group flex-1 flex flex-col items-start p-5 rounded border border-parchment/8 hover:border-gold-dim/30 transition-colors"
+        data-page-prev
+      >
+        <span class="font-sans text-[10px] uppercase tracking-[0.2em] text-parchment/30 group-hover:text-gold-dim transition-colors mb-2">
+          &larr; {prevLabel}
+        </span>
+        {prevTitle && (
+          <span class="font-serif text-sm text-parchment/60 group-hover:text-parchment/90 transition-colors leading-snug">
+            {prevTitle}
+          </span>
+        )}
+      </a>
+    ) : (
+      <div class="flex-1" />
+    )}
+
+    {/* Next */}
+    {nextHref ? (
+      <a
+        href={nextHref}
+        class="group flex-1 flex flex-col items-end text-right p-5 rounded border border-parchment/8 hover:border-gold-dim/30 transition-colors"
+        data-page-next
+      >
+        <span class="font-sans text-[10px] uppercase tracking-[0.2em] text-parchment/30 group-hover:text-gold-dim transition-colors mb-2">
+          {nextLabel} &rarr;
+        </span>
+        {nextTitle && (
+          <span class="font-serif text-sm text-parchment/60 group-hover:text-parchment/90 transition-colors leading-snug">
+            {nextTitle}
+          </span>
+        )}
+      </a>
+    ) : (
+      <div class="flex-1" />
+    )}
+  </div>
+
+  <!-- Keyboard hint -->
+  <p id="keyboard-hint" class="text-center mt-6 font-sans text-[10px] text-parchment/20 tracking-wide transition-opacity duration-700">
+    Use <kbd class="px-1.5 py-0.5 rounded border border-parchment/10 text-parchment/30">&larr;</kbd>
+    <kbd class="px-1.5 py-0.5 rounded border border-parchment/10 text-parchment/30">&rarr;</kbd>
+    arrow keys to navigate
+  </p>
+</nav>

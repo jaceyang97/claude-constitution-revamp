@@ -1,0 +1,47 @@
+---
+// ChapterNav.astro — compact fixed top bar with chapter number, title, and Contents link
+interface Props {
+  currentOrder: number;
+  totalChapters: number;
+  chapterTitle: string;
+}
+
+const { currentOrder, totalChapters, chapterTitle } = Astro.props;
+
+function toRoman(num: number): string {
+  const lookup: [number, string][] = [
+    [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I'],
+  ];
+  let result = '';
+  let remaining = num;
+  for (const [value, numeral] of lookup) {
+    while (remaining >= value) {
+      result += numeral;
+      remaining -= value;
+    }
+  }
+  return result;
+}
+
+const roman = toRoman(currentOrder);
+const totalRoman = toRoman(totalChapters);
+---
+
+<nav class="fixed top-0 left-0 right-0 z-40 bg-ink/90 backdrop-blur-sm border-b border-parchment/5">
+  <div class="max-w-4xl mx-auto px-6 h-12 flex items-center justify-between">
+    <a
+      href="/"
+      class="font-sans text-[11px] uppercase tracking-[0.15em] text-parchment/40 hover:text-gold transition-colors"
+    >
+      &larr; Contents
+    </a>
+
+    <span class="font-sans text-[11px] tracking-wide text-parchment/50 truncate mx-4 text-center hidden sm:block">
+      {chapterTitle}
+    </span>
+
+    <span class="font-sans text-[11px] uppercase tracking-[0.15em] text-parchment/40 whitespace-nowrap">
+      {roman}&thinsp;/&thinsp;{totalRoman}
+    </span>
+  </div>
+</nav>
